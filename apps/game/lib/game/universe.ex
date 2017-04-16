@@ -1,18 +1,21 @@
 defmodule Game.Universe do
   use GenServer
 
+  @alive 1
+  @dead  0
+
   ### PUBLIC API
 
   def init(width, height) do
-    cells = for x <- 0..width,
-                y <- 0..height, into: %{}, do:
-              {{x, y}, :dead}
+    cells = for x <- 0..width-1,
+                y <- 0..height-1, into: %{}, do:
+              {{x, y}, @dead}
 
     GenServer.start_link(__MODULE__, cells)
   end
 
-  def get_alive_cells(pid) do
-    GenServer.call(pid, :get_alive_cells)
+  def get_cells(pid) do
+    GenServer.call(pid, :get_cells)
   end
 
   def create_cell(pid, {_x, _y} = position) do
@@ -33,8 +36,8 @@ defmodule Game.Universe do
     {:ok, cells}
   end
 
-  def handle_call(:get_alive_cells, _from, cells) do
-    {:reply, alive_cell_positions(cells), cells}
+  def handle_call(:get_cells, _from, cells) do
+    {:reply, cells, cells}
   end
 
   def handle_cast({:create_cell, position}, cells) do
@@ -51,27 +54,17 @@ defmodule Game.Universe do
 
   ### PRIVATE
 
-  defp alive_cell_positions(cells) do
-    cells
-    |> Enum.filter(fn
-        {_, :alive} -> true
-        {_, :dead } -> false
-       end)
-    |> Enum.map(&elem(&1, 0))
-    |> Enum.sort
-  end
-  def create(cells, position) do
-    Map.put(cells, position, :alive)
+  defp create(cells, position) do
+    Map.put(cells, position, @alive)
   end
 
   defp kill(cells, position) do
-    Map.put(cells, position, :dead)
+    Map.put(cells, position, @dead)
   end
 
   defp do_tick(cells) do
     do_tick(Map.to_list(cells), cells, {[], []})
   end
-
   defp do_tick([], cells, {to_kill, to_create}) do
     cells = Enum.reduce to_kill, cells, &kill(&2, &1)
     cells = Enum.reduce to_create, cells, &create(&2, &1)
@@ -79,11 +72,9 @@ defmodule Game.Universe do
   end
   defp do_tick([{cell, state} | rest], cells, {to_kill, to_create}) do
     case count_neighbours(cell, cells) do
-      n when state == :alive and n in [2,3] ->
-        do_tick(rest, cells, {to_kill, to_create})
-      _ when state == :alive ->
+      n when state == @alive and not n in [2,3] ->
         do_tick(rest, cells, {[cell | to_kill], to_create})
-      n when state == :dead and n == 3 ->
+      n when state == @dead and n == 3 ->
         do_tick(rest, cells, {to_kill, [cell | to_create]})
       _ ->
         do_tick(rest, cells, {to_kill, to_create})
@@ -96,8 +87,13 @@ defmodule Game.Universe do
                      xn != x or yn != y, do:
                    {xn, yn}
 
-    Enum.reduce neighbours, 0, fn pos, count ->
-      if cells[pos] == :alive, do: count+1, else: count
-    end
+    do_count_neighbours(neighbours, cells, 0)
   end
+
+  defp do_count_neighbours([], _cells, sum), do: sum
+  defp do_count_neighbours(_, _, sum) when sum > 3, do: :greater_three
+  defp do_count_neighbours([n | rest], cells, sum) do
+    do_count_neighbours(rest, cells, sum + Map.get(cells, n, 0))
+  end
+
 end
