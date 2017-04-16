@@ -1,12 +1,12 @@
-defmodule Game do
+defmodule Universe.Client do
 
-  @width 60
-  @height 40
+  @width 15
+  @height 15
   @rate 250
 
   def start do
-    {:ok, pid} = Game.Universe.init(@width, @height)
-    :ok = randomly_place_cells(pid)
+    {:ok, pid} = Universe.init(@width, @height)
+    randomly_place_cells(pid)
     loop(pid)
   end
 
@@ -14,9 +14,8 @@ defmodule Game do
     for _ <- 0..trunc(@width*@height*0.45) do
       x = :rand.uniform(@width) - 1
       y = :rand.uniform(@height) - 1
-      Game.Universe.create_cell(pid, {x, y})
+      Universe.create(pid, {x, y})
     end
-    :ok
   end
 
   def draw(cells) do
@@ -36,8 +35,8 @@ defmodule Game do
   defp to_symbol(_), do: "-"
 
   def loop(pid) do
-    Game.Universe.tick(pid)
-    Game.Universe.get_cells(pid) |> draw
+    Universe.tick(pid)
+    Universe.cells(pid) |> draw
     :timer.sleep(@rate)
     loop(pid)
   end

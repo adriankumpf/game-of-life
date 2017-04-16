@@ -20,7 +20,7 @@ defmodule Game.Mixfile do
   def application do
     # Specify extra applications you'll use from Erlang/Elixir
     [extra_applications: [:logger],
-     mod: {Game.Application, []}]
+     mod: {Game, []}]
   end
 
   # Dependencies can be Hex packages:
