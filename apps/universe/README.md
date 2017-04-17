@@ -1,19 +1,6 @@
-# Game
-
-**TODO: Add description**
-
-## Installation
-
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `game` to your list of dependencies in `mix.exs`:
+# Universe
 
 ```elixir
-def deps do
-  [{:game, "~> 0.1.0"}]
-end
+$ iex -S mix
+iex(1)> Universe.Client.start
 ```
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/game](https://hexdocs.pm/game).
-
