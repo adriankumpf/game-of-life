@@ -51,4 +51,15 @@ defmodule Universe.Behaviour do
   defp do_count_neighbours([n | rest], cells, sum) do
     do_count_neighbours(rest, cells, sum + Map.get(cells, n, 0))
   end
+
+  def get_alive_cells(cells) do
+    cells
+    |> Enum.filter(fn
+      {_, 1} -> true
+      {_, 0} -> false
+    end)
+    |> Enum.map(fn {[x, y], _} ->
+      %{x: x, y: y}
+    end)
+  end
 end

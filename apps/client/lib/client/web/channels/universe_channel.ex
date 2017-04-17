@@ -7,7 +7,18 @@ defmodule Client.Web.UniverseChannel do
 
   def handle_in("init", %{"width" => width, "height" => height}, socket) do
     Universe.init(width, height)
-    push socket, "cells", Universe.cells()
+    for _ <- 0..trunc(width*height*0.25) do
+      x = :rand.uniform(width) - 1
+      y = :rand.uniform(height) - 1
+      Universe.create([x, y])
+    end
+    push socket, "cells",  %{cells: Universe.alive_cells()}
+    {:noreply, socket}
+  end
+
+  def handle_in("tick", _params, socket) do
+    Universe.tick()
+    push socket, "cells",  %{cells: Universe.alive_cells()}
     {:noreply, socket}
   end
 end

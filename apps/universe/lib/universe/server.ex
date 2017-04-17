@@ -15,6 +15,10 @@ defmodule Universe.Server do
     GenServer.call(@name, :cells)
   end
 
+  def alive_cells do
+    GenServer.call(@name, :alive_cells)
+  end
+
   def create([_x, _y] = position) do
     GenServer.cast(@name, {:create, position})
   end
@@ -35,6 +39,10 @@ defmodule Universe.Server do
 
   def handle_call(:cells, _from, cells) do
     {:reply, cells, cells}
+  end
+
+  def handle_call(:alive_cells, _from, cells) do
+    {:reply, Behaviour.get_alive_cells(cells), cells}
   end
 
   def handle_cast({:create, position}, cells) do
