@@ -3,26 +3,28 @@ defmodule Universe.Server do
 
   alias Universe.Behaviour
 
+  @name UniverseServer
+
   ### PUBLIC API
 
   def init(width, height) do
-    GenServer.start_link(__MODULE__, Behaviour.init(width, height))
+    GenServer.start_link(__MODULE__, Behaviour.init(width, height), name: @name)
   end
 
-  def cells(pid) do
-    GenServer.call(pid, :cells)
+  def cells do
+    GenServer.call(@name, :cells)
   end
 
-  def create(pid, {_x, _y} = position) do
-    GenServer.cast(pid, {:create, position})
+  def create([_x, _y] = position) do
+    GenServer.cast(@name, {:create, position})
   end
 
-  def kill(pid, {_x, _y} = position) do
-    GenServer.cast(pid, {:kill, position})
+  def kill([_x, _y] = position) do
+    GenServer.cast(@name, {:kill, position})
   end
 
-  def tick(pid) do
-    GenServer.cast(pid, :tick)
+  def tick do
+    GenServer.cast(@name, :tick)
   end
 
   ### SERVER API

@@ -7,7 +7,7 @@ defmodule Universe.Behaviour do
   def init(width, height)  do
     for x <- 0..width-1,
         y <- 0..height-1, into: %{}, do:
-      {{x, y}, @dead}
+      {[x, y], @dead}
   end
 
   def create(cells, position) do
@@ -37,11 +37,11 @@ defmodule Universe.Behaviour do
     end
   end
 
-  defp count_neighbours({x, y}, cells) do
+  defp count_neighbours([x, y], cells) do
     neighbours = for xn <- x-1..x+1,
                      yn <- y-1..y+1,
                      xn != x or yn != y, do:
-                   {xn, yn}
+                   [xn, yn]
 
     do_count_neighbours(neighbours, cells, 0)
   end
