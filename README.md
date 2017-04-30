@@ -1,8 +1,8 @@
+![Demo](docs/demo.gif)
+
 # Game of Life
 
 Conway's Game of Life in Elixir.
-
-![Demo](docs/demo.gif)
 
 ```bash
 mix deps.get

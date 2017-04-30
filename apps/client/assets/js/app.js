@@ -7,7 +7,7 @@ const { clientWidth, clientHeight } = document.getElementById('app')
 const $canvas = document.getElementById('canvas')
 const $ctx = $canvas.getContext('2d')
 
-const RATE = 150
+const RATE = 210
 const SCALE = 10
 const WIDTH = roundToMultiple(clientWidth, SCALE)
 const HEIGHT = roundToMultiple(clientHeight, SCALE)

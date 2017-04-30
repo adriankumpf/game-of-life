@@ -7,7 +7,7 @@ defmodule Client.Web.UniverseChannel do
 
   def handle_in("init", %{"width" => width, "height" => height}, socket) do
     Universe.init(width, height)
-    for _ <- 0..trunc(width*height*0.25) do
+    for _ <- 0..trunc(width*height*0.15) do
       x = :rand.uniform(width) - 1
       y = :rand.uniform(height) - 1
       Universe.create([x, y])
